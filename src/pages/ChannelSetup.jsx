@@ -112,7 +112,7 @@ function StepInfo({ onNext }) {
             value={storeCode}
             onChange={e => setStoreCode(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleNext()}
-            placeholder="VD: PT001, HCM-002..."
+            placeholder="VD: PHUCTEA164 - BÀ RỊA"
             className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-orange-400 transition-colors uppercase"
           />
         </div>
