@@ -4,10 +4,29 @@ import { quizzes } from '../data/quizzes';
 import { modules } from '../data/courses';
 import ProgressBar from '../components/ProgressBar';
 
+const CHANNEL_QUESTION_MAP = {
+  shopeefood: [0, 1, 2],
+  grabfood: [3, 4, 5],
+  baemin: [6],
+};
+
+function buildQuiz(moduleId) {
+  const base = quizzes[moduleId];
+  if (!base || moduleId !== 'foodapps') return base;
+  try {
+    const channels = JSON.parse(localStorage.getItem('selected_channels') || '[]');
+    const keep = new Set([7]); // always include order-detail question
+    channels.forEach(ch => (CHANNEL_QUESTION_MAP[ch] || []).forEach(i => keep.add(i)));
+    return { ...base, questions: base.questions.filter((_, i) => keep.has(i)) };
+  } catch {
+    return base;
+  }
+}
+
 export default function Quiz() {
   const { moduleId } = useParams();
   const navigate = useNavigate();
-  const quiz = quizzes[moduleId];
+  const quiz = buildQuiz(moduleId);
   const mod = modules.find(m => m.id === moduleId);
 
   const [current, setCurrent] = useState(0);

@@ -5,30 +5,70 @@ import { quizzes } from '../data/quizzes';
 function getProgress(moduleId) {
   const completed = JSON.parse(localStorage.getItem(`completed_${moduleId}`) || '[]');
   const quizPassed = localStorage.getItem(`quiz_passed_${moduleId}`) === 'true';
-  const mod = modules.find(m => m.id === moduleId);
-  if (!mod) return { completedLessons: 0, total: 0, quizPassed };
-  return { completedLessons: completed.length, total: mod.lessons.length, quizPassed };
+  return { completed, quizPassed };
 }
 
-export default function Home() {
+// Filter lessons for a module based on selected channels
+function filterLessons(mod, channels) {
+  if (mod.id !== 'foodapps') return mod.lessons;
+  return mod.lessons.filter(l => !l.channel || channels.includes(l.channel));
+}
+
+// Filter quiz questions for foodapps based on channels
+const CHANNEL_QUESTION_MAP = {
+  shopeefood: [0, 1, 2],
+  grabfood: [3, 4, 5],
+  baemin: [6],
+  // order-detail: [7] always shown if any foodapps channel
+};
+
+function getFilteredQuiz(moduleId, channels) {
+  const quiz = quizzes[moduleId];
+  if (!quiz || moduleId !== 'foodapps') return quiz;
+
+  const keep = new Set();
+  channels.forEach(ch => {
+    (CHANNEL_QUESTION_MAP[ch] || []).forEach(i => keep.add(i));
+  });
+  // Always include the order-detail question (index 7)
+  keep.add(7);
+
+  return {
+    ...quiz,
+    questions: quiz.questions.filter((_, i) => keep.has(i)),
+  };
+}
+
+export default function Home({ channels = [] }) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
       {/* Hero */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-10">
         <div className="text-5xl mb-4">🍵</div>
         <h1 className="text-3xl font-bold text-gray-900 mb-3">
           FoodApps Partner Training
         </h1>
-        <p className="text-gray-600 text-lg max-w-xl mx-auto">
-          Chương trình đào tạo đối tác về vận hành FoodApps và tích – đổi điểm CRM
+        <p className="text-gray-500 text-sm">
+          Chương trình đào tạo dành riêng cho các kênh:{' '}
+          <span className="font-medium text-orange-600">
+            {channels.length > 0
+              ? ['ShopeeFood', 'GrabFood', 'Baemin', 'Hỏa Tốc']
+                  .filter((_, i) => channels.includes(['shopeefood', 'grabfood', 'baemin', 'hoatoc'][i]))
+                  .join(', ')
+              : 'Tất cả'} + CRM
+          </span>
         </p>
       </div>
 
       {/* Module Cards */}
       <div className="grid gap-6">
         {modules.map((mod) => {
-          const { completedLessons, total, quizPassed } = getProgress(mod.id);
-          const quiz = quizzes[mod.id];
+          const filteredLessons = filterLessons(mod, channels);
+          const filteredQuiz = getFilteredQuiz(mod.id, channels);
+          const { completed, quizPassed } = getProgress(mod.id);
+          const completedCount = completed.filter(id =>
+            filteredLessons.some(l => l.id === id)
+          ).length;
 
           return (
             <div key={mod.id} className={`bg-white rounded-2xl shadow-sm border ${mod.borderColor} overflow-hidden`}>
@@ -44,7 +84,7 @@ export default function Home() {
                   </div>
                   <div className="hidden sm:flex flex-col items-end gap-1">
                     <span className="text-white/90 text-sm font-medium">
-                      {completedLessons}/{total} bài học
+                      {completedCount}/{filteredLessons.length} bài học
                     </span>
                     {quizPassed && (
                       <span className="bg-white/20 text-white text-xs px-2 py-1 rounded-full">
@@ -58,7 +98,7 @@ export default function Home() {
                   <div className="w-full bg-white/30 rounded-full h-2">
                     <div
                       className="bg-white h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${total > 0 ? (completedLessons / total) * 100 : 0}%` }}
+                      style={{ width: `${filteredLessons.length > 0 ? (completedCount / filteredLessons.length) * 100 : 0}%` }}
                     />
                   </div>
                 </div>
@@ -67,8 +107,7 @@ export default function Home() {
               {/* Lessons list */}
               <div className="p-4">
                 <div className="grid sm:grid-cols-2 gap-2 mb-4">
-                  {mod.lessons.map((lesson) => {
-                    const completed = JSON.parse(localStorage.getItem(`completed_${mod.id}`) || '[]');
+                  {filteredLessons.map((lesson) => {
                     const isDone = completed.includes(lesson.id);
                     return (
                       <Link
@@ -96,7 +135,7 @@ export default function Home() {
                 </div>
 
                 {/* Quiz button */}
-                {quiz && (
+                {filteredQuiz && filteredQuiz.questions.length > 0 && (
                   <Link
                     to={`/module/${mod.id}/quiz`}
                     className={`flex items-center justify-between w-full p-4 rounded-xl border-2 transition-all font-medium ${
@@ -108,8 +147,10 @@ export default function Home() {
                     <div className="flex items-center gap-3">
                       <span className="text-xl">📝</span>
                       <div>
-                        <p className="font-semibold">{quiz.title}</p>
-                        <p className="text-xs opacity-70">{quizzes[mod.id]?.questions.length} câu hỏi • Đạt từ {quiz.passingScore}%</p>
+                        <p className="font-semibold">{filteredQuiz.title}</p>
+                        <p className="text-xs opacity-70">
+                          {filteredQuiz.questions.length} câu hỏi • Đạt từ {filteredQuiz.passingScore}%
+                        </p>
                       </div>
                     </div>
                     <span className="text-lg">{quizPassed ? '🏆' : '→'}</span>

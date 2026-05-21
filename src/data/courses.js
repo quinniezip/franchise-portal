@@ -10,6 +10,7 @@ export const modules = [
     lessons: [
       {
         id: 'shopeefood',
+        channel: 'shopeefood',
         title: 'ShopeeFood – Shopee Partner',
         icon: '🍊',
         duration: '10 phút',
@@ -59,6 +60,7 @@ export const modules = [
       },
       {
         id: 'grabfood',
+        channel: 'grabfood',
         title: 'GrabFood – GrabMerchant',
         icon: '🟢',
         duration: '10 phút',
@@ -106,6 +108,7 @@ export const modules = [
       },
       {
         id: 'baemin',
+        channel: 'baemin',
         title: 'Baemin – Vill Merchant',
         icon: '🔵',
         duration: '8 phút',
@@ -140,6 +143,7 @@ export const modules = [
       },
       {
         id: 'hoatoc',
+        channel: 'hoatoc',
         title: 'Hỏa Tốc – Cửa Hàng Hỏa Tốc',
         icon: '⚡',
         duration: '8 phút',
