@@ -16,14 +16,29 @@ function App() {
     }
   });
 
+  function handleReset() {
+    localStorage.removeItem('selected_channels');
+    localStorage.removeItem('partner_name');
+    localStorage.removeItem('store_code');
+    setChannels(null);
+  }
+
   if (!channels) {
     return <ChannelSetup onComplete={setChannels} />;
   }
 
+  const partnerName = localStorage.getItem('partner_name') || '';
+  const storeCode = localStorage.getItem('store_code') || '';
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
-        <Navbar channels={channels} onChangeChannels={() => setChannels(null)} />
+        <Navbar
+          channels={channels}
+          partnerName={partnerName}
+          storeCode={storeCode}
+          onChangeChannels={handleReset}
+        />
         <Routes>
           <Route path="/" element={<Home channels={channels} />} />
           <Route path="/module/:moduleId/lesson/:lessonId" element={<Lesson />} />
