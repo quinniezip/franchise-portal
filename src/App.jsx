@@ -31,7 +31,7 @@ function App() {
   const storeCode = localStorage.getItem('store_code') || '';
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/franchise-portal/">
       <div className="min-h-screen bg-gray-50">
         <Navbar
           channels={channels}
