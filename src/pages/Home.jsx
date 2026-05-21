@@ -8,13 +8,11 @@ function getProgress(moduleId) {
   return { completed, quizPassed };
 }
 
-// Filter lessons for a module based on selected channels
 function filterLessons(mod, channels) {
   if (mod.id !== 'foodapps') return mod.lessons;
   return mod.lessons.filter(l => !l.channel || channels.includes(l.channel));
 }
 
-// Map channel → quiz question indices (question index 7 = order-detail, always shown)
 const CHANNEL_QUESTION_MAP = {
   shopeefood: [0, 1, 2],
   grabfood: [3, 4, 5],
@@ -26,25 +24,115 @@ const CHANNEL_QUESTION_MAP = {
 function getFilteredQuiz(moduleId, channels) {
   const quiz = quizzes[moduleId];
   if (!quiz || moduleId !== 'foodapps') return quiz;
+  const keep = new Set([7]);
+  channels.forEach(ch => (CHANNEL_QUESTION_MAP[ch] || []).forEach(i => keep.add(i)));
+  return { ...quiz, questions: quiz.questions.filter((_, i) => keep.has(i)) };
+}
 
-  const keep = new Set();
-  channels.forEach(ch => {
-    (CHANNEL_QUESTION_MAP[ch] || []).forEach(i => keep.add(i));
+// Banner hiển thị trạng thái tổng kết và lời cảm ơn
+function SummaryBanner({ modules, channels }) {
+  const partnerName = localStorage.getItem('partner_name') || 'bạn';
+  const results = modules.map(mod => {
+    const { quizPassed } = getProgress(mod.id);
+    const quiz = getFilteredQuiz(mod.id, channels);
+    const hasQuiz = quiz && quiz.questions.length > 0;
+    return { mod, quizPassed, hasQuiz };
   });
-  // Always include the order-detail question (index 7)
-  keep.add(7);
 
-  return {
-    ...quiz,
-    questions: quiz.questions.filter((_, i) => keep.has(i)),
-  };
+  const quizModules = results.filter(r => r.hasQuiz);
+  const allPassed = quizModules.length > 0 && quizModules.every(r => r.quizPassed);
+  const anyAttempted = quizModules.some(r => r.quizPassed);
+  const failedModules = quizModules.filter(r => !r.quizPassed);
+
+  if (!anyAttempted) return null;
+
+  if (allPassed) {
+    return (
+      <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-6 text-white mb-8 shadow-md">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="text-5xl">🎉</div>
+          <div className="text-center sm:text-left">
+            <h2 className="text-xl font-bold mb-1">
+              Chúc mừng {partnerName}! Bạn đã hoàn thành toàn bộ chương trình đào tạo.
+            </h2>
+            <p className="text-white/85 text-sm">
+              Cảm ơn bạn đã dành thời gian học tập. Chúc bạn vận hành cửa hàng thật tốt! 🍵
+            </p>
+          </div>
+        </div>
+        {/* Kết quả từng module */}
+        <div className="mt-4 grid sm:grid-cols-3 gap-2">
+          {quizModules.map(({ mod }) => (
+            <div key={mod.id} className="bg-white/20 rounded-xl px-4 py-2 flex items-center gap-2 text-sm font-medium">
+              <span>{mod.icon}</span>
+              <span className="flex-1 truncate">{mod.title}</span>
+              <span>✅</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Có module chưa đạt
+  return (
+    <div className="space-y-3 mb-8">
+      {/* Modules đã đạt */}
+      {quizModules.filter(r => r.quizPassed).map(({ mod }) => (
+        <div key={mod.id} className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center gap-3">
+          <span className="text-xl">{mod.icon}</span>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-green-800">{mod.title}</p>
+            <p className="text-xs text-green-600">Bạn đã hoàn thành và đạt bài kiểm tra ✅</p>
+          </div>
+        </div>
+      ))}
+
+      {/* Modules chưa đạt */}
+      {failedModules.map(({ mod }) => {
+        const filteredLessons = filterLessons(mod, channels);
+        const { completed } = getProgress(mod.id);
+        const firstLesson = filteredLessons[0];
+        return (
+          <div key={mod.id} className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
+            <div className="flex items-start gap-3 mb-3">
+              <span className="text-2xl">{mod.icon}</span>
+              <div>
+                <p className="font-semibold text-red-800 text-sm">{mod.title}</p>
+                <p className="text-xs text-red-600 mt-0.5">
+                  Bạn chưa đạt bài kiểm tra module này. Hãy ôn lại bài học và thử lại nhé!
+                </p>
+              </div>
+              <span className="ml-auto text-xl flex-shrink-0">❌</span>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              {firstLesson && (
+                <Link
+                  to={`/module/${mod.id}/lesson/${firstLesson.id}`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-semibold bg-gradient-to-r ${mod.color} text-white hover:opacity-90 transition-all`}
+                >
+                  📖 Ôn lại bài học
+                </Link>
+              )}
+              <Link
+                to={`/module/${mod.id}/quiz`}
+                className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-semibold bg-red-100 text-red-700 border border-red-300 hover:bg-red-200 transition-all"
+              >
+                🔄 Làm lại bài kiểm tra
+              </Link>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function Home({ channels = [] }) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
       {/* Hero */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-8">
         <div className="text-5xl mb-4">🍵</div>
         <h1 className="text-3xl font-bold text-gray-900 mb-3">
           FoodApps Partner Training
@@ -60,6 +148,9 @@ export default function Home({ channels = [] }) {
           </span>
         </p>
       </div>
+
+      {/* Summary banner */}
+      <SummaryBanner modules={modules} channels={channels} />
 
       {/* Module Cards */}
       <div className="grid gap-6">
@@ -94,7 +185,6 @@ export default function Home({ channels = [] }) {
                     )}
                   </div>
                 </div>
-                {/* Progress bar */}
                 <div className="mt-4">
                   <div className="w-full bg-white/30 rounded-full h-2">
                     <div
