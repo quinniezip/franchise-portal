@@ -22,8 +22,8 @@ export const CHANNELS = [
     ring: 'ring-green-400',
   },
   {
-    id: 'baemin',
-    name: 'Baemin',
+    id: 'vill',
+    name: 'VILL',
     icon: '🔵',
     desc: 'Vill Merchant App',
     bg: 'bg-blue-50',
@@ -32,14 +32,24 @@ export const CHANNELS = [
     ring: 'ring-blue-400',
   },
   {
-    id: 'hoatoc',
-    name: 'Hỏa Tốc',
-    icon: '⚡',
-    desc: 'Cửa Hàng Hỏa Tốc App',
-    bg: 'bg-yellow-50',
-    border: 'border-yellow-300',
-    selectedBg: 'bg-yellow-100',
-    ring: 'ring-yellow-400',
+    id: 'goka',
+    name: 'Goka',
+    icon: '🟣',
+    desc: 'Goka Merchant App',
+    bg: 'bg-purple-50',
+    border: 'border-purple-300',
+    selectedBg: 'bg-purple-100',
+    ring: 'ring-purple-400',
+  },
+  {
+    id: 'iloka',
+    name: 'ILOKA',
+    icon: '🔴',
+    desc: 'ILOKA Partner App',
+    bg: 'bg-red-50',
+    border: 'border-red-300',
+    selectedBg: 'bg-red-100',
+    ring: 'ring-red-400',
   },
 ];
 
@@ -73,15 +83,18 @@ export default function ChannelSetup({ onComplete, initial = [] }) {
           </p>
         </div>
 
-        {/* Channel grid */}
+        {/* Channel grid – 2 cols, last item centred if odd */}
         <div className="grid grid-cols-2 gap-3 mb-6">
-          {CHANNELS.map(ch => {
+          {CHANNELS.map((ch, idx) => {
             const isSelected = selected.includes(ch.id);
+            const isLast = idx === CHANNELS.length - 1 && CHANNELS.length % 2 !== 0;
             return (
               <button
                 key={ch.id}
                 onClick={() => toggle(ch.id)}
                 className={`relative flex flex-col items-center gap-2 p-5 rounded-xl border-2 transition-all text-center ${
+                  isLast ? 'col-span-2 sm:col-span-1 sm:col-start-1 mx-auto w-full sm:w-48' : ''
+                } ${
                   isSelected
                     ? `${ch.selectedBg} ${ch.border} shadow-md ring-2 ${ch.ring}`
                     : `${ch.bg} border-gray-200 hover:border-gray-300`

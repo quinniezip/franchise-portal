@@ -107,9 +107,9 @@ export const modules = [
         ],
       },
       {
-        id: 'baemin',
-        channel: 'baemin',
-        title: 'Baemin – Vill Merchant',
+        id: 'vill',
+        channel: 'vill',
+        title: 'VILL – Vill Merchant',
         icon: '🔵',
         duration: '8 phút',
         sections: [
@@ -118,7 +118,7 @@ export const modules = [
             content: [
               'Tải ứng dụng **Vill Merchant** trên CH Play hoặc App Store.',
               'Nhập **ID và mật khẩu** được hệ thống cung cấp.',
-              'Chọn **"Lưu mật khẩu"**.',
+              'Chọn **"Lưu mật khẩu"** để tiện đăng nhập lần sau.',
               'Bấm **"Đăng nhập"**.',
             ],
           },
@@ -128,6 +128,7 @@ export const modules = [
               '1. Xem đơn ở mục **"Đơn Mới"**.',
               '2. Chuẩn bị và **bấm bill** giống như order của khách.',
               '3. Đối chiếu **mã đơn hàng và tên tài xế** để đưa hàng.',
+              'ℹ️ Doanh thu được tổng hợp và thanh toán theo lịch của VILL – kiểm tra mục **"Doanh thu"** trong app.',
             ],
           },
           {
@@ -142,16 +143,54 @@ export const modules = [
         ],
       },
       {
-        id: 'hoatoc',
-        channel: 'hoatoc',
-        title: 'Hỏa Tốc – Cửa Hàng Hỏa Tốc',
-        icon: '⚡',
+        id: 'goka',
+        channel: 'goka',
+        title: 'Goka – Goka Merchant',
+        icon: '🟣',
         duration: '8 phút',
         sections: [
           {
             title: 'A – Đăng Nhập',
             content: [
-              'Tải ứng dụng **Cửa Hàng Hỏa Tốc** trên CH Play hoặc App Store.',
+              'Tải ứng dụng **Goka Merchant** trên CH Play hoặc App Store.',
+              'Nhập **ID và mật khẩu** được hệ thống cung cấp.',
+              'Chọn **"Lưu mật khẩu"** để tiện đăng nhập lần sau.',
+              'Bấm **"Đăng nhập"**.',
+            ],
+          },
+          {
+            title: 'B – Nhận Đơn & Thanh Toán',
+            content: [
+              'Khi có đơn mới, app sẽ **báo tiếng và hiển thị thông báo**.',
+              '1. Mở thông báo, xem chi tiết đơn hàng.',
+              '2. Bấm **"Xác nhận đơn"** để bắt đầu chuẩn bị.',
+              '3. Chuẩn bị đơn và bấm **"Đã xong"** khi hoàn tất.',
+              '4. Đối chiếu **thông tin tài xế** khi giao hàng.',
+              'ℹ️ Doanh thu được tổng hợp và thanh toán theo lịch của Goka – kiểm tra mục **"Báo cáo"** trong app.',
+            ],
+          },
+          {
+            title: 'C – Cập Nhật Giờ Hoạt Động',
+            content: [
+              '*Áp dụng khi cửa hàng tạm nghỉ hoặc đang có nhiều đơn, nhân sự không chuẩn bị kịp.*',
+              '1. Vào mục **"Cài đặt cửa hàng"**.',
+              '2. Bật/tắt trạng thái **"Mở cửa / Đóng cửa"** hoặc chọn **"Tạm bận"**.',
+              '3. Hệ thống tự động cập nhật trạng thái hiển thị trên app khách hàng.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'iloka',
+        channel: 'iloka',
+        title: 'ILOKA – ILOKA Partner',
+        icon: '🔴',
+        duration: '8 phút',
+        sections: [
+          {
+            title: 'A – Đăng Nhập',
+            content: [
+              'Tải ứng dụng **ILOKA Partner** trên CH Play hoặc App Store.',
               'Nhập **số điện thoại và mật khẩu** được hệ thống cung cấp.',
               'Bấm **"Đăng nhập"**.',
             ],
@@ -159,16 +198,22 @@ export const modules = [
           {
             title: 'B – Nhận Đơn & Thanh Toán',
             content: [
-              'Khi có đơn, app sẽ **báo và hiện ở mục "Thông Báo"**.',
-              'Chuẩn bị và **bấm bill** giống như order của khách.',
-              'Đối chiếu **thông tin tài xế** để đưa hàng và **thu tiền mặt**.',
+              'Khi có đơn mới, app sẽ **rung và hiện ở mục "Đơn hàng mới"**.',
+              '1. Nhấn vào đơn hàng để xem chi tiết.',
+              '2. Bấm **"Nhận đơn"** và bắt đầu chuẩn bị.',
+              '3. Chuẩn bị xong bấm **"Hoàn tất chuẩn bị"**.',
+              '4. Đối chiếu **mã đơn và thông tin tài xế** khi giao hàng.',
+              'ℹ️ Doanh thu được thanh toán về tài khoản ngân hàng theo lịch định kỳ của ILOKA.',
             ],
           },
           {
             title: 'C – Cập Nhật Giờ Hoạt Động',
             content: [
               '*Áp dụng khi cửa hàng tạm nghỉ hoặc đang có nhiều đơn, nhân sự không chuẩn bị kịp.*',
-              'Nhấn vào **nút bật/tắt** để mở hoặc đóng cửa hàng.',
+              '1. Vào **"Trang chủ"** → chọn biểu tượng **cài đặt**.',
+              '2. Chọn **"Trạng thái cửa hàng"**.',
+              '3. Chuyển sang **"Tạm đóng"** và chọn thời gian phù hợp.',
+              '4. Bấm **"Xác nhận"** để cập nhật.',
             ],
           },
         ],

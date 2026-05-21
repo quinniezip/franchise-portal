@@ -14,12 +14,13 @@ function filterLessons(mod, channels) {
   return mod.lessons.filter(l => !l.channel || channels.includes(l.channel));
 }
 
-// Filter quiz questions for foodapps based on channels
+// Map channel → quiz question indices (question index 7 = order-detail, always shown)
 const CHANNEL_QUESTION_MAP = {
   shopeefood: [0, 1, 2],
   grabfood: [3, 4, 5],
-  baemin: [6],
-  // order-detail: [7] always shown if any foodapps channel
+  vill: [6],
+  goka: [],
+  iloka: [],
 };
 
 function getFilteredQuiz(moduleId, channels) {
@@ -52,8 +53,8 @@ export default function Home({ channels = [] }) {
           Chương trình đào tạo dành riêng cho các kênh:{' '}
           <span className="font-medium text-orange-600">
             {channels.length > 0
-              ? ['ShopeeFood', 'GrabFood', 'Baemin', 'Hỏa Tốc']
-                  .filter((_, i) => channels.includes(['shopeefood', 'grabfood', 'baemin', 'hoatoc'][i]))
+              ? ['ShopeeFood', 'GrabFood', 'VILL', 'Goka', 'ILOKA']
+                  .filter((_, i) => channels.includes(['shopeefood', 'grabfood', 'vill', 'goka', 'iloka'][i]))
                   .join(', ')
               : 'Tất cả'} + CRM
           </span>

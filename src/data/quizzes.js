@@ -62,7 +62,7 @@ export const quizzes = {
       },
       {
         id: 7,
-        question: 'Trên Baemin (Vill Merchant), sau khi nhận đơn nhân sự cần đối chiếu thông tin gì để giao hàng cho đúng?',
+        question: 'Trên VILL (Vill Merchant), sau khi nhận đơn nhân sự cần đối chiếu thông tin gì để giao hàng cho đúng?',
         options: [
           'Tên và địa chỉ khách hàng',
           'Mã đơn hàng và tên tài xế',
@@ -70,7 +70,7 @@ export const quizzes = {
           'Mã QR của tài xế',
         ],
         correct: 1,
-        explanation: 'Trên Baemin, nhân sự cần đối chiếu mã đơn hàng và tên tài xế để đưa hàng cho đúng người.',
+        explanation: 'Trên VILL, nhân sự cần đối chiếu mã đơn hàng và tên tài xế để đưa hàng cho đúng người.',
       },
       {
         id: 8,

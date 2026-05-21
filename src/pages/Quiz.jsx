@@ -7,7 +7,9 @@ import ProgressBar from '../components/ProgressBar';
 const CHANNEL_QUESTION_MAP = {
   shopeefood: [0, 1, 2],
   grabfood: [3, 4, 5],
-  baemin: [6],
+  vill: [6],
+  goka: [],
+  iloka: [],
 };
 
 function buildQuiz(moduleId) {
