@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { reportProgress } from '../utils/reportProgress';
 
 export const CHANNELS = [
   {
@@ -146,6 +147,10 @@ function StepChannels({ onComplete }) {
   function handleSubmit() {
     if (selected.length === 0) return;
     localStorage.setItem('selected_channels', JSON.stringify(selected));
+    reportProgress({
+      event: 'Đăng ký',
+      channels: selected.join(', '),
+    });
     onComplete(selected);
   }
 

@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { quizzes } from '../data/quizzes';
 import { modules } from '../data/courses';
 import ProgressBar from '../components/ProgressBar';
+import { reportProgress } from '../utils/reportProgress';
 
 const CHANNEL_QUESTION_MAP = {
   shopeefood: [0, 1, 2],
@@ -66,9 +67,16 @@ export default function Quiz() {
     } else {
       const score = newAnswers.filter(a => a.selected === a.correct).length;
       const percent = Math.round((score / totalQ) * 100);
-      if (percent >= quiz.passingScore) {
+      const passed = percent >= quiz.passingScore;
+      if (passed) {
         localStorage.setItem(`quiz_passed_${moduleId}`, 'true');
       }
+      reportProgress({
+        event: 'Hoàn thành bài kiểm tra',
+        module: quiz.title,
+        score: percent,
+        passed,
+      });
       setFinished(true);
     }
   }
