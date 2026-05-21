@@ -2,6 +2,16 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { modules } from '../data/courses';
 import RichText from '../components/RichText';
 
+function getFilteredLessons(mod) {
+  if (mod.id !== 'foodapps') return mod.lessons;
+  try {
+    const channels = JSON.parse(localStorage.getItem('selected_channels') || '[]');
+    return mod.lessons.filter(l => !l.channel || channels.includes(l.channel));
+  } catch {
+    return mod.lessons;
+  }
+}
+
 export default function Lesson() {
   const { moduleId, lessonId } = useParams();
   const navigate = useNavigate();
@@ -18,9 +28,10 @@ export default function Lesson() {
     );
   }
 
-  const lessonIndex = mod.lessons.findIndex(l => l.id === lessonId);
-  const prevLesson = mod.lessons[lessonIndex - 1];
-  const nextLesson = mod.lessons[lessonIndex + 1];
+  const filteredLessons = getFilteredLessons(mod);
+  const lessonIndex = filteredLessons.findIndex(l => l.id === lessonId);
+  const prevLesson = filteredLessons[lessonIndex - 1];
+  const nextLesson = filteredLessons[lessonIndex + 1];
 
   function markComplete() {
     const key = `completed_${moduleId}`;
@@ -58,7 +69,7 @@ export default function Lesson() {
           <span className="text-4xl">{lesson.icon}</span>
           <div>
             <p className="text-white/70 text-sm font-medium uppercase tracking-wide">
-              Bài {lessonIndex + 1}/{mod.lessons.length}
+              Bài {lessonIndex + 1}/{filteredLessons.length}
             </p>
             <h1 className="text-2xl font-bold mt-1">{lesson.title}</h1>
             <p className="text-white/80 text-sm mt-1">⏱ {lesson.duration}</p>
